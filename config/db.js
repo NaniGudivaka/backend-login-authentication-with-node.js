@@ -1,10 +1,10 @@
-const express = require('express');
+
 const mysql = require('mysql2');
 const dotenv = require('dotenv');
 
 dotenv.config();
 
-
+//creating db
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
   user: process.env.DB_USER,
@@ -17,6 +17,8 @@ const pool = mysql.createPool({
 });
 const db = pool.promise();
 
+
+//creating table
 async function createTable() {
   try {
     const query = `
@@ -42,4 +44,6 @@ async function createTable() {
 
             createTable();
 
+
+//exporting ..
 module.exports = db;

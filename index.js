@@ -12,6 +12,14 @@ const bcrypt = require('bcrypt');
 
 const db = require('./config/db.js');
 
+//importing signup route
+const signupRoute = require('./routes/signup.js');
+//import login route
+const loginRoute = require('./routes/login.js');
+//import verifytoken module
+
+const verifyToken = require('./middleware/verifyToken.js');
+
 dotenv.config();
 
 const app = express();
@@ -30,13 +38,14 @@ app.use(helmet());
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 15,
+  message: 'Too many signup/login attempts. Please try again later.',
 });
 
-app.use(limiter);
+// app.use(limiter);
 
 //checking database connections
 
-async function textDB(){
+async function testDB(){
   try{
     const con = await db.getConnection();
     console.log('DataBase connected successfully..');
@@ -47,7 +56,19 @@ async function textDB(){
   }
 
 }
-textDB();
+testDB();
+//protected route
+app.get('/auth/dashboard', verifyToken, (req, res) =>{
+  res.status(200).json({
+    message: 'Welcome to DashBoard',
+    user: req.user
+  });
+});
+
+//signup rote
+app.use('/auth', limiter, signupRoute);
+//login route
+app.use('/auth', limiter, loginRoute);
 
 //Checking the server
 app.get('/', (req, res) =>{
@@ -56,7 +77,7 @@ app.get('/', (req, res) =>{
 
 
 //Creating server
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, ()=>{
   console.log(`Server Started Successfully on Port ${PORT}`);
