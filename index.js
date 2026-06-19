@@ -8,6 +8,10 @@ const helmet = require('helmet');
 const rateLimit = require("express-rate-limit");
 const bcrypt = require('bcrypt');
 
+//importing db.js
+
+const db = require('./config/db.js');
+
 dotenv.config();
 
 const app = express();
@@ -29,6 +33,21 @@ const limiter = rateLimit({
 });
 
 app.use(limiter);
+
+//checking database connections
+
+async function textDB(){
+  try{
+    const con = await db.getConnection();
+    console.log('DataBase connected successfully..');
+    con.release();
+
+  }catch(err){
+    console.log(err);
+  }
+
+}
+textDB();
 
 //Checking the server
 app.get('/', (req, res) =>{
