@@ -16,16 +16,20 @@ const db = require('./config/db.js');
 const signupRoute = require('./routes/signup.js');
 //import login route
 const loginRoute = require('./routes/login.js');
-//import verifytoken module
+//import verifyToken module
 
 const verifyToken = require('./middleware/verifyToken.js');
+//import logout route
+
+const logoutRoute = require('./routes/logout.js');
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cors({
-  origin: "https://login-authentication-using-node-js.vercel.app",
+  origin: "http://localhost:5173",
+    
   credentials: true,
 })
 );
@@ -37,7 +41,7 @@ app.use(helmet());
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
-  max: 15,
+  max: 50,
   message: 'Too many signup/login attempts. Please try again later.',
 });
 
@@ -69,6 +73,8 @@ app.get('/auth/dashboard', verifyToken, (req, res) =>{
 app.use('/auth', limiter, signupRoute);
 //login route
 app.use('/auth', limiter, loginRoute);
+//logout route
+app.use('/auth', logoutRoute);
 
 //Checking the server
 app.get('/', (req, res) =>{
@@ -77,7 +83,7 @@ app.get('/', (req, res) =>{
 
 
 //Creating server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 4000;
 
 app.listen(PORT, ()=>{
   console.log(`Server Started Successfully on Port ${PORT}`);

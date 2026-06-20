@@ -26,11 +26,12 @@ router.post('/login', async (req, res) => {
 
     const [user] = await db.query(loginQuery, [email]);
 
-    if (user.length === 0) {
+    if (!user.length) {
       return res.status(401).json({
         message: 'Incorrect email or password',
       })
     }
+    
     //checking the password
 
     const isMatch = await bcrypt.compare(
@@ -60,22 +61,25 @@ router.post('/login', async (req, res) => {
     //stores jwt in cookie
 
     res.cookie('token', token, {
-      httpOnly:true,
-      secure:false,
+      httpOnly: true,
+      secure: false,
       sameSite: 'lax',
       maxAge: 24 * 60 * 60 * 1000
     });
+    
 
     return res.status(200).json({
       message: 'Login successful',
-      
+
     });
+    console.log("Email:", email);
+    console.log("Password:", password);
 
 
   } catch (err) {
     console.log(err);
     return res.status(500).json({
-      message:'Internal Server Error',
+      message: 'Internal Server Error',
     });
 
   }

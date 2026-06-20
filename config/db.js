@@ -7,42 +7,45 @@ dotenv.config();
 //creating db
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0,
-
+  ssl: {
+    minVersion: "TLSv1.2",
+    rejectUnauthorized: true,
+  },
 });
+
+
 const db = pool.promise();
 
 
-//creating table
-async function createTable() {
-  try {
-    const query = `
-              CREATE TABLE IF NOT EXISTS users (
-              id INT AUTO_INCREMENT PRIMARY KEY,
-              name VARCHAR(100) NOT NULL,
-              email VARCHAR(100) UNIQUE NOT NULL,
-              password VARCHAR(255) NOT NULL,
-              created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-              )
-              `;
+// //creating table
+// async function createTable() {
+//   try {
+//     const query = `
+//               CREATE TABLE IF NOT EXISTS users (
+//               id INT AUTO_INCREMENT PRIMARY KEY,
+//               name VARCHAR(100) NOT NULL,
+//               email VARCHAR(100) UNIQUE NOT NULL,
+//               password VARCHAR(255) NOT NULL,
+//               created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+//               )
+//               `;
 
-              await db.query(query);
-              console.log('Table created successfully..');
+//               await db.query(query);
+//               console.log('Table created successfully..');
             
 
-              } catch (err) {
-                console.log(err);
+//               } catch (err) {
+//                 console.log(err);
 
-              }
+//               }
 
-            }
+//             }
 
-            createTable();
+//             createTable();
 
 
 //exporting ..
