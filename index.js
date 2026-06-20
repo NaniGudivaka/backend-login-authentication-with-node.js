@@ -22,6 +22,8 @@ const verifyToken = require('./middleware/verifyToken.js');
 //import logout route
 
 const logoutRoute = require('./routes/logout.js');
+//import profile
+const profileRoute = require('./routes/profile.js');
 
 dotenv.config();
 
@@ -76,6 +78,8 @@ app.use('/auth', limiter, signupRoute);
 app.use('/auth', limiter, loginRoute);
 //logout route
 app.use('/auth', logoutRoute);
+//profile route
+app.use('/auth', profileRoute);
 
 //Checking the server
 app.get('/', (req, res) =>{
